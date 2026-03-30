@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "env": {
+    "REACT_APP_API_URL": "https://crowdshield-api.onrender.com/api",
+    "REACT_APP_WS_URL":  "https://crowdshield-api.onrender.com/ws"
+  }
+}
