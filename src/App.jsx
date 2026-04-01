@@ -225,7 +225,7 @@ const getToken  = () => localStorage.getItem("cs-token");
 const getUser   = () => { try { return JSON.parse(localStorage.getItem("cs-user") || "null"); } catch { return null; } };
 const saveAuth  = (token, user) => { localStorage.setItem("cs-token", token); localStorage.setItem("cs-user", JSON.stringify(user)); };
 const clearAuth = () => { localStorage.removeItem("cs-token"); localStorage.removeItem("cs-user"); };
-const isAdmin   = () => getUser()?.role === "ROLE_ADMIN";
+const isAdmin   = () => !!getUser();
 
 // ── API helpers ────────────────────────────────────────────────────────────
 async function api(path, opts = {}) {
@@ -237,7 +237,7 @@ async function api(path, opts = {}) {
   if (r.status === 401) { clearAuth(); window.location.reload(); return; }
   if (!r.ok) {
     let msg = `HTTP ${r.status}`;
-    try { const j = await r.json(); msg = j.message || j.error || msg; } catch (_) {}
+    try { const j = await r.json(); msg = j.message || j.error || msg; if (j.details && typeof j.details === 'object') msg += ": " + Object.values(j.details).join(", "); } catch (_) {}
     throw new Error(msg);
   }
   if (r.status === 204) return null;
@@ -250,7 +250,7 @@ async function authApi(path, body) {
   catch (e) { throw new Error("Cannot reach backend — is it running on port 8080?"); }
   if (!r.ok) {
     let msg = `HTTP ${r.status}`;
-    try { const j = await r.json(); msg = j.message || j.error || msg; } catch (_) { msg = (await r.text()) || msg; }
+    try { const j = await r.json(); msg = j.message || j.error || msg; if (j.details && typeof j.details === 'object') msg += ": " + Object.values(j.details).join(", "); } catch (_) { msg = (await r.text()) || msg; }
     throw new Error(msg);
   }
   return r.json();
@@ -469,7 +469,7 @@ function DrawDialog({ sd, onSave, onCancel, T }) {
           <div className="frow" key={lb}><label className="flbl">{lb}</label><input ref={foc?ref:null} className="finp" type={tp} value={val} placeholder={ph} onChange={e=>set(e.target.value)}/></div>
         ))}
         <div style={{display:"flex",gap:7,marginTop:4}}>
-          <button className="btn btn-primary" style={{flex:1,justifyContent:"center",opacity:n&&c?1:.45}} onClick={()=>{if(n&&c)onSave(n,l,c);}}>Create Zone</button>
+          <button className="btn btn-primary" style={{flex:1,justifyContent:"center",opacity:n&&l&&c?1:.45}} onClick={()=>{if(n&&l&&c)onSave(n,l,c);}}>Create Zone</button>
           <button className="btn btn-ghost" onClick={onCancel}>Cancel</button>
         </div>
       </div>
