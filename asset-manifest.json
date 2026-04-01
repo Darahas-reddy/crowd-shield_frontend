@@ -1,0 +1,10 @@
+{
+  "files": {
+    "main.js": "/crowd-shield_frontend/static/js/main.e1f56817.js",
+    "index.html": "/crowd-shield_frontend/index.html",
+    "main.e1f56817.js.map": "/crowd-shield_frontend/static/js/main.e1f56817.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.e1f56817.js"
+  ]
+}
